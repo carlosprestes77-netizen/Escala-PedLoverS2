@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Escala de Plantões - PedLover S2</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 16px 24px;
+      background: #020617;
+      border-bottom: 1px solid #1f2937;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.4rem;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: #9ca3af;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    button, select, input, textarea {
+      border-radius: 6px;
+      border: 1px solid #4b5563;
+      background: #020617;
+      color: #e5e7eb;
+      padding: 6px 10px;
+      font-size: 0.9rem;
+    }
+
+    button {
+      cursor: pointer;
+      border-color: #6366f1;
+    }
+
+    button:hover {
+      background: #111827;
+    }
+
+    main {
+      flex: 1;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(280px, 1.15fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 900px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .calendar-container {
+      background: #020617;
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid #1f2937;
+    }
+
+    .calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .month-display {
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-transform: capitalize;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+
+    .weekday {
+      text-align: center;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: #9ca3af;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #1f2937;
+    }
+
+    .day-cell {
+      min-height: 90px;
+      background: #020617;
+      border-radius: 8px;
+      border: 1px solid #1f2937;
+      padding: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.8rem;
+      position: relative;
+    }
+
+    .day-cell.today {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 1px rgba(99,102,241,0.5);
+    }
+
+    .day-number {
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .plantao-badge {
+      border-radius: 6px;
+      padding: 2px 4px;
+      background: rgba(56,189,248,0.08);
+      border: 1px solid rgba(56,189,248,0.5);
+      font-size: 0.7rem;
+      line-height: 1.1;
+      cursor: default;
+      margin-top: 2px;
+    }
+
+    .plantao-badge strong {
+      display: block;
+      font-size: 0.72rem;
+    }
+
+    .sidebar {
+      background: #020617;
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid #1f2937;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sidebar h2 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.85rem;
+    }
+
+    .field-group label {
+      color: #d1d5db;
+    }
+
+    .field-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .field-row > * {
+      flex: 1;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    .info-box {
+      margin-top: 8px;
+      padding: 8px;
+      border-radius: 8px;
+      background: #0b1120;
+      border: 1px dashed #334155;
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #0b1120;
+      border: 1px solid #1d4ed8;
+      color: #c7d2fe;
+    }
+
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title-group">
+      <h1>Escala de Plantões</h1>
+      <div class="subtitle">
+        Organização mínima para sobreviver à residência com sanidade parcial.
+      </div>
+    </div>
+    <div class="controls">
+      <div class="pill">
+        <span class="pill-dot"></span>
+        <span>Dados salvos neste navegador</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="calendar-container">
+      <div class="calendar-header">
+        <div>
+          <button id="prevMonthBtn">&lt;</button>
+          <button id="nextMonthBtn">&gt;</button>
+        </div>
+        <div class="month-display" id="monthLabel">Mês Ano</div>
+        <div>
+          <select id="filterDoctorSelect">
+            <option value="__all__">Todas as residentes</option>
+          </select>
+        </div>
+      </div>
+      <div class="calendar-grid" id="calendarGrid">
+        <!-- calendário entra aqui -->
+      </div>
+    </section>
+
+    <aside class="sidebar">
+      <h2>Novo plantão</h2>
+
+      <div class="info-box">
+        <strong>Importante:</strong><br />
+        Esta versão salva os plantões apenas neste dispositivo.<br />
+        Se abrir o link em outro celular/notebook, começa com uma escala vazia.
+      </div>
+
+      <div class="field-group">
+        <label for="dateInput">Data</label>
+        <input id="dateInput" type="date" />
+      </div>
+
+      <div class="field-group">
+        <label for="doctorSelect">Residente</label>
+        <select id="doctorSelect"></select>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label for="startTimeInput">Início</label>
+          <input id="startTimeInput" type="time" />
+        </div>
+        <div class="field-group">
+          <label for="endTimeInput">Fim</label>
+          <input id="endTimeInput" type="time" />
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="typeInput">Tipo de plantão</label>
+        <input id="typeInput" type="text" placeholder="UTI, PS, enfermaria, ambulatório..." />
+      </div>
+
+      <div class="field-group">
+        <label for="notesInput">Observações</label>
+        <textarea id="notesInput" placeholder="Ex.: troca com fulana, cirurgia, prova, etc."></textarea>
+      </div>
+
+      <button id="saveShiftBtn">Salvar plantão</button>
+
+      <div class="info-box">
+        <strong>Dica:</strong><br />
+        Você pode instalar esse site no celular como “app” pelo navegador (Adicionar à tela de início) e usar como se fosse aplicativo.
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    // ===============================
+    // CONFIG LISTA DE RESIDENTES
+    // (já funciona assim, sem mudar nada)
+    // ===============================
+    const RESIDENTES = [
+      "Residente A",
+      "Residente B",
+      "Residente C"
+    ];
+
+    const STORAGE_KEY = "escala_pedlover_s2";
+
+    // ===============================
+    // ELEMENTOS
+    // ===============================
+    const monthLabel = document.getElementById("monthLabel");
+    const calendarGrid = document.getElementById("calendarGrid");
+    const prevMonthBtn = document.getElementById("prevMonthBtn");
+    const nextMonthBtn = document.getElementById("nextMonthBtn");
+    const filterDoctorSelect = document.getElementById("filterDoctorSelect");
+
+    const dateInput = document.getElementById("dateInput");
+    const doctorSelect = document.getElementById("doctorSelect");
+    const startTimeInput = document.getElementById("startTimeInput");
+    const endTimeInput = document.getElementById("endTimeInput");
+    const typeInput = document.getElementById("typeInput");
+    const notesInput = document.getElementById("notesInput");
+    const saveShiftBtn = document.getElementById("saveShiftBtn");
+
+    let currentDate = new Date();
+    let currentYear = currentDate.getFullYear();
+    let currentMonth = currentDate.getMonth(); // 0 = janeiro
+    let shifts = [];
+    let currentFilterDoctor = "__all__";
+
+    // ===============================
+    // STORAGE
+    // ===============================
+    function loadFromStorage() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+          shifts = [];
+          return;
+        }
+        const data = JSON.parse(raw);
+        if (Array.isArray(data)) {
+          shifts = data;
+        } else {
+          shifts = [];
+        }
+      } catch (e) {
+        console.error("Erro ao ler localStorage:", e);
+        shifts = [];
+      }
+    }
+
+    function saveToStorage() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(shifts));
+      } catch (e) {
+        console.error("Erro ao salvar localStorage:", e);
+      }
+    }
+
+    // ===============================
+    // UTIL
+    // ===============================
+    function initDoctorSelects() {
+      doctorSelect.innerHTML = "";
+      filterDoctorSelect.innerHTML = "";
+
+      const optAll = document.createElement("option");
+      optAll.value = "__all__";
+      optAll.textContent = "Todas as residentes";
+      filterDoctorSelect.appendChild(optAll);
+
+      RESIDENTES.forEach(name => {
+        const opt = document.createElement("option");
+        opt.value = name;
+        opt.textContent = name;
+        doctorSelect.appendChild(opt);
+
+        const optFilter = document.createElement("option");
+        optFilter.value = name;
+        optFilter.textContent = name;
+        filterDoctorSelect.appendChild(optFilter);
+      });
+    }
+
+    function formatMonthLabel(year, month) {
+      const formatter = new Intl.DateTimeFormat("pt-BR", {
+        month: "long",
+        year: "numeric"
+      });
+      return formatter.format(new Date(year, month, 1));
+    }
+
+    function isToday(year, month, day) {
+      const today = new Date();
+      return (
+        year === today.getFullYear() &&
+        month === today.getMonth() &&
+        day === today.getDate()
+      );
+    }
+
+    function renderCalendar() {
+      calendarGrid.innerHTML = "";
+
+      const weekdays = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
+      weekdays.forEach(dia => {
+        const el = document.createElement("div");
+        el.className = "weekday";
+        el.textContent = dia;
+        calendarGrid.appendChild(el);
+      });
+
+      const firstDay = new Date(currentYear, currentMonth, 1);
+      const lastDay = new Date(currentYear, currentMonth + 1, 0);
+
+      let startWeekday = firstDay.getDay(); // 0 domingo ... 6 sábado
+      startWeekday = (startWeekday + 6) % 7; // 0 segunda
+
+      for (let i = 0; i < startWeekday; i++) {
+        const empty = document.createElement("div");
+        empty.className = "day-cell";
+        calendarGrid.appendChild(empty);
+      }
+
+      const mm = (currentMonth + 1).toString().padStart(2, "0");
+
+      for (let day = 1; day <= lastDay.getDate(); day++) {
+        const dd = day.toString().padStart(2, "0");
+        const dateStr = `${currentYear}-${mm}-${dd}`;
+
+        const cell = document.createElement("div");
+        cell.className = "day-cell";
+        if (isToday(currentYear, currentMonth, day)) {
+          cell.classList.add("today");
+        }
+
+        const dayNumber = document.createElement("div");
+        dayNumber.className = "day-number";
+        dayNumber.textContent = day;
+        cell.appendChild(dayNumber);
+
+        const dayShifts = shifts.filter(s => {
+          const sameDay = s.date === dateStr;
+          const matchesFilter =
+            currentFilterDoctor === "__all__" || s.doctor === currentFilterDoctor;
+          return sameDay && matchesFilter;
+        });
+
+        dayShifts
+          .sort((a, b) => (a.startTime || "").localeCompare(b.startTime || ""))
+          .forEach(s => {
+            const badge = document.createElement("div");
+            badge.className = "plantao-badge";
+            badge.innerHTML = `
+              <strong>${s.doctor}</strong>
+              ${(s.startTime || "")}${s.endTime ? " - " + s.endTime : ""}<br>
+              ${(s.type || "")}${s.notes ? " · " + s.notes : ""}
+            `;
+            cell.appendChild(badge);
+          });
+
+        calendarGrid.appendChild(cell);
+      }
+
+      monthLabel.textContent = formatMonthLabel(currentYear, currentMonth);
+    }
+
+    function saveShift() {
+      const dateVal = dateInput.value;
+      const doctorVal = doctorSelect.value;
+      const startVal = startTimeInput.value;
+      const endVal = endTimeInput.value;
+      const typeVal = typeInput.value.trim();
+      const notesVal = notesInput.value.trim();
+
+      if (!dateVal || !doctorVal) {
+        alert("Preencha pelo menos a data e a residente.");
+        return;
+      }
+
+      const newShift = {
+        id: Date.now().toString(),
+        date: dateVal,
+        doctor: doctorVal,
+        startTime: startVal || "",
+        endTime: endVal || "",
+        type: typeVal || "",
+        notes: notesVal || ""
+      };
+
+      shifts.push(newShift);
+      saveToStorage();
+
+      const [yyyy, mmStr] = dateVal.split("-");
+      const year = parseInt(yyyy, 10);
+      const month = parseInt(mmStr, 10) - 1;
+
+      if (year === currentYear && month === currentMonth) {
+        renderCalendar();
+      }
+
+      startTimeInput.value = "";
+      endTimeInput.value = "";
+      typeInput.value = "";
+      notesInput.value = "";
+    }
+
+    // ===============================
+    // EVENTOS
+    // ===============================
+    prevMonthBtn.addEventListener("click", () => {
+      currentMonth--;
+      if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+      }
+      renderCalendar();
+    });
+
+    nextMonthBtn.addEventListener("click", () => {
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+      renderCalendar();
+    });
+
+    filterDoctorSelect.addEventListener("change", () => {
+      currentFilterDoctor = filterDoctorSelect.value;
+      renderCalendar();
+    });
+
+    saveShiftBtn.addEventListener("click", () => {
+      saveShift();
+    });
+
+    // ===============================
+    // INICIALIZAÇÃO
+    // ===============================
+    initDoctorSelects();
+    loadFromStorage();
+    dateInput.valueAsDate = new Date();
+    renderCalendar();
+  </script>
+</body>
+</html>

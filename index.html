@@ -200,6 +200,232 @@
 
   <header>
     <div class="title-group">
-      <h
+      <h1>Escala de Plantões</h1>
+      <div class="subtitle">Organização para sobreviver à residência com sanidade parcial.</div>
+    </div>
+  </header>
 
-  
+  <main>
+    <section class="calendar-container">
+      <div class="calendar-header">
+        <div>
+          <button id="prevMonthBtn">&lt;</button>
+          <button id="nextMonthBtn">&gt;</button>
+        </div>
+
+        <div class="month-display" id="monthLabel">Mês Ano</div>
+
+        <div>
+          <select id="filterDoctorSelect">
+            <option value="__all__">Todas as residentes</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="calendar-grid" id="calendarGrid"></div>
+    </section>
+
+    <aside class="sidebar">
+      <h2>Novo plantão</h2>
+
+      <div class="field-group">
+        <label>Data</label>
+        <input id="dateInput" type="date">
+      </div>
+
+      <div class="field-group">
+        <label>Residente</label>
+        <select id="doctorSelect"></select>
+      </div>
+
+      <div class="field-group">
+        <label>Início</label>
+        <input id="startTimeInput" type="time">
+      </div>
+
+      <div class="field-group">
+        <label>Fim</label>
+        <input id="endTimeInput" type="time">
+      </div>
+
+      <div class="field-group">
+        <label>Tipo</label>
+        <input id="typeInput" type="text">
+      </div>
+
+      <div class="field-group">
+        <label>Observações</label>
+        <textarea id="notesInput"></textarea>
+      </div>
+
+      <button id="saveShiftBtn">Salvar plantão</button>
+    </aside>
+  </main>
+
+  <script>
+    // RESIDENTES
+    const RESIDENTES = ["Bruna", "Julia", "Livia", "Flavia"];
+
+    const STORAGE_KEY = "escala_pedlover_s2";
+
+    const monthLabel = document.getElementById("monthLabel");
+    const calendarGrid = document.getElementById("calendarGrid");
+    const prevMonthBtn = document.getElementById("prevMonthBtn");
+    const nextMonthBtn = document.getElementById("nextMonthBtn");
+    const filterDoctorSelect = document.getElementById("filterDoctorSelect");
+    const doctorSelect = document.getElementById("doctorSelect");
+
+    const dateInput = document.getElementById("dateInput");
+    const startTimeInput = document.getElementById("startTimeInput");
+    const endTimeInput = document.getElementById("endTimeInput");
+    const typeInput = document.getElementById("typeInput");
+    const notesInput = document.getElementById("notesInput");
+    const saveShiftBtn = document.getElementById("saveShiftBtn");
+
+    let shifts = [];
+
+    let currentDate = new Date();
+    let currentYear = currentDate.getFullYear();
+    let currentMonth = currentDate.getMonth();
+    let currentFilterDoctor = "__all__";
+
+    function loadFromStorage() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      shifts = raw ? JSON.parse(raw) : [];
+    }
+
+    function saveToStorage() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(shifts));
+    }
+
+    function initDoctorSelects() {
+      doctorSelect.innerHTML = "";
+      filterDoctorSelect.innerHTML = '<option value="__all__">Todas as residentes</option>';
+
+      RESIDENTES.forEach(name => {
+        const opt1 = document.createElement("option");
+        opt1.value = name;
+        opt1.textContent = name;
+        doctorSelect.appendChild(opt1);
+
+        const opt2 = document.createElement("option");
+        opt2.value = name;
+        opt2.textContent = name;
+        filterDoctorSelect.appendChild(opt2);
+      });
+    }
+
+    function renderCalendar() {
+      calendarGrid.innerHTML = "";
+
+      const weekdays = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
+      weekdays.forEach(d => {
+        const div = document.createElement("div");
+        div.className = "weekday";
+        div.textContent = d;
+        calendarGrid.appendChild(div);
+      });
+
+      const firstDay = new Date(currentYear, currentMonth, 1);
+      const lastDay = new Date(currentYear, currentMonth + 1, 0);
+
+      let startWeekday = (firstDay.getDay() + 6) % 7;
+
+      for (let i = 0; i < startWeekday; i++) {
+        const empty = document.createElement("div");
+        empty.className = "day-cell";
+        calendarGrid.appendChild(empty);
+      }
+
+      const monthStr = String(currentMonth + 1).padStart(2, "0");
+
+      for (let day = 1; day <= lastDay.getDate(); day++) {
+        const dayStr = String(day).padStart(2, "0");
+        const dateStr = `${currentYear}-${monthStr}-${dayStr}`;
+
+        const cell = document.createElement("div");
+        cell.className = "day-cell";
+
+        const num = document.createElement("div");
+        num.className = "day-number";
+        num.textContent = day;
+        cell.appendChild(num);
+
+        const dayShifts = shifts.filter(s =>
+          s.date === dateStr &&
+          (currentFilterDoctor === "__all__" || s.doctor === currentFilterDoctor)
+        );
+
+        dayShifts.forEach(s => {
+          const badge = document.createElement("div");
+          badge.className = "plantao-badge";
+          badge.innerHTML = `
+            <strong>${s.doctor}</strong>
+            ${s.startTime} - ${s.endTime}<br>
+            ${s.type} ${s.notes ? "· " + s.notes : ""}
+          `;
+          cell.appendChild(badge);
+        });
+
+        calendarGrid.appendChild(cell);
+      }
+
+      const label = new Intl.DateTimeFormat("pt-BR", { month: "long", year: "numeric" })
+        .format(new Date(currentYear, currentMonth, 1));
+
+      monthLabel.textContent = label;
+    }
+
+    saveShiftBtn.addEventListener("click", () => {
+      if (!dateInput.value) return alert("Selecione a data.");
+
+      const newShift = {
+        id: Date.now(),
+        date: dateInput.value,
+        doctor: doctorSelect.value,
+        startTime: startTimeInput.value,
+        endTime: endTimeInput.value,
+        type: typeInput.value,
+        notes: notesInput.value
+      };
+
+      shifts.push(newShift);
+      saveToStorage();
+      renderCalendar();
+    });
+
+    prevMonthBtn.addEventListener("click", () => {
+      currentMonth--;
+      if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+      }
+      renderCalendar();
+    });
+
+    nextMonthBtn.addEventListener("click", () => {
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+      renderCalendar();
+    });
+
+    filterDoctorSelect.addEventListener("change", () => {
+      currentFilterDoctor = filterDoctorSelect.value;
+      renderCalendar();
+    });
+
+    // BOTÃO TEMA
+    document.getElementById("themeToggle").addEventListener("click", () => {
+      document.body.classList.toggle("light-mode");
+    });
+
+    initDoctorSelects();
+    loadFromStorage();
+    renderCalendar();
+  </script>
+
+</body>
+</html>

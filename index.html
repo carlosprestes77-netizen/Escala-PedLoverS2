@@ -271,10 +271,6 @@
     }
 
     /* MODAL (POPUP DO DIA) */
-    .hidden {
-      display: none;
-    }
-
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -289,17 +285,22 @@
       background: rgba(15, 23, 42, 0.35);
     }
 
+    /* AQUI É O PULO DO GATO: quando tiver .hidden, some mesmo */
+    .modal-backdrop.hidden {
+      display: none;
+    }
+
     .modal-card {
       max-width: 420px;
       width: calc(100% - 32px);
-      max-height: 80vh;          /* não estoura na tela do celular */
+      max-height: 80vh;
       background: rgba(15, 23, 42, 0.95);
       border-radius: 16px;
       padding: 16px 18px 14px;
       border: 1px solid rgba(148, 163, 184, 0.9);
       backdrop-filter: blur(18px);
       color: #e5e7eb;
-      overflow-y: auto;          /* scroll dentro do card */
+      overflow-y: auto;
     }
 
     body.light-mode .modal-card {
@@ -752,4 +753,3 @@
   </script>
 </body>
 </html>
-

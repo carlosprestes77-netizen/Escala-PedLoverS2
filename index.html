@@ -16,72 +16,94 @@
       padding: 0;
       background: url("bg.avif") no-repeat center center fixed;
       background-size: cover;
-      backdrop-filter: blur(1px);
       color: #e5e7eb;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-      transition: 0.3s ease-in-out;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     /* MODO CLARO */
     body.light-mode {
-      color: #111;
+      color: #111827;
     }
 
     body.light-mode header,
     body.light-mode .calendar-container,
     body.light-mode .sidebar {
-      background: rgba(255, 255, 255, 0.6);
-      backdrop-filter: blur(6px);
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      color: #111;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      color: #111827;
     }
 
     body.light-mode .day-cell {
-      background: rgba(255, 255, 255, 0.65);
-      border: 1px solid rgba(0, 0, 0, 0.08);
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(209, 213, 219, 0.9);
+      color: #111827;
     }
 
-    /* HEADER */
+    body.light-mode .plantao-badge {
+      background: rgba(248, 250, 252, 0.95);
+      border-color: rgba(148, 163, 184, 0.9);
+      color: #111827;
+    }
+
+    body.light-mode .weekday {
+      color: #4b5563;
+    }
+
     header {
       padding: 16px 24px;
-      background: rgba(0, 0, 0, 0.55);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(15, 23, 42, 0.8);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.6);
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      backdrop-filter: blur(8px);
-    }
-
-    /* BOTÃO MODO ESCURO/CLARO */
-    #themeToggle {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      font-size: 1rem;
-      background: rgba(0,0,0,0.45);
-      padding: 6px 10px;
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.2);
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    #themeToggle:hover {
-      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(10px);
+      position: relative;
     }
 
     h1 {
       margin: 0;
-      font-size: 1.4rem;
+      font-size: 1.5rem;
     }
 
     .subtitle {
       font-size: 0.85rem;
       color: #cbd5e1;
+    }
+
+    body.light-mode .subtitle {
+      color: #6b7280;
+    }
+
+    #themeToggleBtn {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    body.light-mode #themeToggleBtn {
+      background: rgba(248, 250, 252, 0.95);
+      color: #111827;
+      border-color: rgba(148, 163, 184, 0.9);
+    }
+
+    #themeToggleBtn:hover {
+      filter: brightness(1.05);
     }
 
     main {
@@ -100,11 +122,11 @@
 
     .calendar-container,
     .sidebar {
-      background: rgba(0, 0, 0, 0.55);
-      backdrop-filter: blur(6px);
-      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.78);
+      border-radius: 16px;
       padding: 16px;
-      border: 1px solid rgba(255,255,255,0.15);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      backdrop-filter: blur(14px);
     }
 
     .calendar-header {
@@ -134,19 +156,28 @@
       text-transform: uppercase;
       color: #cbd5e1;
       padding-bottom: 4px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.6);
+      font-weight: 500;
     }
 
     .day-cell {
       min-height: 90px;
-      background: rgba(0,0,0,0.45);
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(15, 23, 42, 0.85);
+      border-radius: 10px;
+      border: 1px solid rgba(51, 65, 85, 0.9);
       padding: 4px;
       display: flex;
       flex-direction: column;
       gap: 4px;
       font-size: 0.8rem;
-      position: relative;
+      cursor: pointer;
+      transition: background 0.18s ease, transform 0.08s ease, box-shadow 0.18s ease;
+    }
+
+    .day-cell:hover {
+      background: rgba(30, 64, 175, 0.75);
+      box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.7);
+      transform: translateY(-1px);
     }
 
     .day-number {
@@ -155,16 +186,21 @@
     }
 
     .plantao-badge {
-      border-radius: 6px;
-      padding: 2px 4px;
-      background: rgba(56,189,248,0.1);
-      border: 1px solid rgba(56,189,248,0.5);
+      border-radius: 8px;
+      padding: 3px 6px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.8);
       font-size: 0.7rem;
-      cursor: default;
+      line-height: 1.25;
+    }
+
+    .plantao-badge strong {
+      display: block;
+      font-size: 0.72rem;
     }
 
     .sidebar h2 {
-      margin: 0;
+      margin: 0 0 8px 0;
       font-size: 1rem;
     }
 
@@ -173,6 +209,7 @@
       flex-direction: column;
       gap: 4px;
       font-size: 0.85rem;
+      margin-bottom: 8px;
     }
 
     textarea {
@@ -181,36 +218,166 @@
     }
 
     button, select, input, textarea {
-      border-radius: 6px;
-      border: 1px solid #64748b;
-      background: rgba(0,0,0,0.4);
-      color: #fff;
+      border-radius: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
       padding: 6px 10px;
+      font-size: 0.9rem;
     }
 
-    button:hover {
-      background: rgba(255,255,255,0.1);
+    body.light-mode button,
+    body.light-mode select,
+    body.light-mode input,
+    body.light-mode textarea {
+      background: rgba(248, 250, 252, 0.98);
+      color: #111827;
+      border-color: rgba(148, 163, 184, 0.9);
+    }
+
+    button.primary {
+      cursor: pointer;
+      border-color: rgba(129, 140, 248, 0.9);
+      background: radial-gradient(circle at 0% 0%, rgba(129, 140, 248, 0.7), rgba(37, 99, 235, 0.9));
+      color: #f9fafb;
+    }
+
+    button.primary:hover {
+      filter: brightness(1.05);
+      box-shadow: 0 0 10px rgba(129, 140, 248, 0.8);
+    }
+
+    /* MODAL (POPUP DO DIA) */
+    .hidden {
+      display: none;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.78);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+
+    body.light-mode .modal-backdrop {
+      background: rgba(15, 23, 42, 0.35);
+    }
+
+    .modal-card {
+      max-width: 420px;
+      width: calc(100% - 32px);
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: 16px;
+      padding: 16px 18px 14px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      backdrop-filter: blur(18px);
+      color: #e5e7eb;
+    }
+
+    body.light-mode .modal-card {
+      background: rgba(248, 250, 252, 0.98);
+      border-color: rgba(148, 163, 184, 0.9);
+      color: #111827;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .modal-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+      padding: 2px 7px;
+      font-size: 0.8rem;
+    }
+
+    .modal-body {
+      font-size: 0.85rem;
+      max-height: 320px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .modal-shift {
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      padding: 6px 8px;
+      margin-bottom: 6px;
+    }
+
+    .modal-shift-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .modal-shift-notes {
+      margin-top: 2px;
+      font-size: 0.78rem;
+      opacity: 0.9;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: 0.75rem;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.8);
+    }
+
+    body.light-mode .pill {
+      background: rgba(248, 250, 252, 0.98);
+      border-color: rgba(148, 163, 184, 0.9);
+    }
+
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
     }
   </style>
 </head>
 
 <body>
-
-  <button id="themeToggle">🌗</button>
-
   <header>
-    <div class="title-group">
+    <div>
       <h1>Escala de Plantões</h1>
-      <div class="subtitle">Organização para sobreviver à residência com sanidade parcial.</div>
+      <div class="subtitle">Bruna · Julia · Livia · Flavia</div>
     </div>
+
+    <div class="pill">
+      <span class="pill-dot"></span>
+      <span>Dados salvos neste navegador</span>
+    </div>
+
+    <button id="themeToggleBtn" type="button">🌙 Modo escuro</button>
   </header>
 
   <main>
     <section class="calendar-container">
       <div class="calendar-header">
         <div>
-          <button id="prevMonthBtn">&lt;</button>
-          <button id="nextMonthBtn">&gt;</button>
+          <button id="prevMonthBtn" type="button">&lt;</button>
+          <button id="nextMonthBtn" type="button">&gt;</button>
         </div>
 
         <div class="month-display" id="monthLabel">Mês Ano</div>
@@ -229,78 +396,136 @@
       <h2>Novo plantão</h2>
 
       <div class="field-group">
-        <label>Data</label>
-        <input id="dateInput" type="date">
+        <label for="dateInput">Data</label>
+        <input id="dateInput" type="date" />
       </div>
 
       <div class="field-group">
-        <label>Residente</label>
+        <label for="doctorSelect">Residente</label>
         <select id="doctorSelect"></select>
       </div>
 
       <div class="field-group">
-        <label>Início</label>
-        <input id="startTimeInput" type="time">
+        <label for="startTimeInput">Início</label>
+        <input id="startTimeInput" type="time" />
       </div>
 
       <div class="field-group">
-        <label>Fim</label>
-        <input id="endTimeInput" type="time">
+        <label for="endTimeInput">Fim</label>
+        <input id="endTimeInput" type="time" />
       </div>
 
       <div class="field-group">
-        <label>Tipo</label>
-        <input id="typeInput" type="text">
+        <label for="typeInput">Tipo de plantão</label>
+        <input id="typeInput" type="text" placeholder="UTI, PS, enfermaria..." />
       </div>
 
       <div class="field-group">
-        <label>Observações</label>
-        <textarea id="notesInput"></textarea>
+        <label for="notesInput">Observações</label>
+        <textarea id="notesInput" placeholder="Troca com fulana, cirurgia, prova..."></textarea>
       </div>
 
-      <button id="saveShiftBtn">Salvar plantão</button>
+      <button id="saveShiftBtn" class="primary" type="button">Salvar plantão</button>
     </aside>
   </main>
 
+  <!-- MODAL DO DIA -->
+  <div id="dayModal" class="modal-backdrop hidden">
+    <div class="modal-card" id="dayModalCard">
+      <div class="modal-header">
+        <div class="modal-title" id="dayModalTitle">Plantões</div>
+        <button class="modal-close" id="dayModalClose" type="button">Fechar</button>
+      </div>
+      <div class="modal-body" id="dayModalContent">
+        <!-- conteúdo via JS -->
+      </div>
+    </div>
+  </div>
+
   <script>
-    // RESIDENTES
+    // CONFIG
     const RESIDENTES = ["Bruna", "Julia", "Livia", "Flavia"];
-
     const STORAGE_KEY = "escala_pedlover_s2";
+    const THEME_KEY = "escala_pedlover_theme";
 
+    // ELEMENTOS
     const monthLabel = document.getElementById("monthLabel");
     const calendarGrid = document.getElementById("calendarGrid");
     const prevMonthBtn = document.getElementById("prevMonthBtn");
     const nextMonthBtn = document.getElementById("nextMonthBtn");
     const filterDoctorSelect = document.getElementById("filterDoctorSelect");
     const doctorSelect = document.getElementById("doctorSelect");
-
     const dateInput = document.getElementById("dateInput");
     const startTimeInput = document.getElementById("startTimeInput");
     const endTimeInput = document.getElementById("endTimeInput");
     const typeInput = document.getElementById("typeInput");
     const notesInput = document.getElementById("notesInput");
     const saveShiftBtn = document.getElementById("saveShiftBtn");
+    const themeToggleBtn = document.getElementById("themeToggleBtn");
+
+    const dayModal = document.getElementById("dayModal");
+    const dayModalCard = document.getElementById("dayModalCard");
+    const dayModalTitle = document.getElementById("dayModalTitle");
+    const dayModalContent = document.getElementById("dayModalContent");
+    const dayModalClose = document.getElementById("dayModalClose");
 
     let shifts = [];
-
     let currentDate = new Date();
     let currentYear = currentDate.getFullYear();
-    let currentMonth = currentDate.getMonth();
+    let currentMonth = currentDate.getMonth(); // 0 = janeiro
     let currentFilterDoctor = "__all__";
 
+    // STORAGE
     function loadFromStorage() {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      shifts = raw ? JSON.parse(raw) : [];
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        shifts = raw ? JSON.parse(raw) : [];
+        if (!Array.isArray(shifts)) shifts = [];
+      } catch {
+        shifts = [];
+      }
     }
 
     function saveToStorage() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(shifts));
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(shifts));
+      } catch { }
     }
 
+    // THEME
+    function applyTheme(theme) {
+      const isLight = theme === "light";
+      if (isLight) {
+        document.body.classList.add("light-mode");
+        themeToggleBtn.textContent = "☀️ Modo claro";
+      } else {
+        document.body.classList.remove("light-mode");
+        themeToggleBtn.textContent = "🌙 Modo escuro";
+      }
+    }
+
+    function loadTheme() {
+      const saved = localStorage.getItem(THEME_KEY);
+      const theme = saved === "light" || saved === "dark" ? saved : "dark";
+      applyTheme(theme);
+    }
+
+    function toggleTheme() {
+      const isLight = document.body.classList.contains("light-mode");
+      const next = isLight ? "dark" : "light";
+      applyTheme(next);
+      localStorage.setItem(THEME_KEY, next);
+    }
+
+    // SELECTS
     function initDoctorSelects() {
       doctorSelect.innerHTML = "";
-      filterDoctorSelect.innerHTML = '<option value="__all__">Todas as residentes</option>';
+      filterDoctorSelect.innerHTML = "";
+
+      const optAll = document.createElement("option");
+      optAll.value = "__all__";
+      optAll.textContent = "Todas as residentes";
+      filterDoctorSelect.appendChild(optAll);
 
       RESIDENTES.forEach(name => {
         const opt1 = document.createElement("option");
@@ -315,85 +540,162 @@
       });
     }
 
+    // CALENDÁRIO
+    function formatMonthLabel(year, month) {
+      return new Intl.DateTimeFormat("pt-BR", {
+        month: "long",
+        year: "numeric"
+      }).format(new Date(year, month, 1));
+    }
+
     function renderCalendar() {
       calendarGrid.innerHTML = "";
 
       const weekdays = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
-      weekdays.forEach(d => {
-        const div = document.createElement("div");
-        div.className = "weekday";
-        div.textContent = d;
-        calendarGrid.appendChild(div);
+      weekdays.forEach(dia => {
+        const el = document.createElement("div");
+        el.className = "weekday";
+        el.textContent = dia;
+        calendarGrid.appendChild(el);
       });
 
       const firstDay = new Date(currentYear, currentMonth, 1);
       const lastDay = new Date(currentYear, currentMonth + 1, 0);
-
-      let startWeekday = (firstDay.getDay() + 6) % 7;
+      let startWeekday = firstDay.getDay(); // 0 domingo
+      startWeekday = (startWeekday + 6) % 7; // 0 segunda
 
       for (let i = 0; i < startWeekday; i++) {
         const empty = document.createElement("div");
         empty.className = "day-cell";
+        empty.style.cursor = "default";
         calendarGrid.appendChild(empty);
       }
 
-      const monthStr = String(currentMonth + 1).padStart(2, "0");
+      const mm = String(currentMonth + 1).padStart(2, "0");
 
       for (let day = 1; day <= lastDay.getDate(); day++) {
-        const dayStr = String(day).padStart(2, "0");
-        const dateStr = `${currentYear}-${monthStr}-${dayStr}`;
+        const dd = String(day).padStart(2, "0");
+        const dateStr = `${currentYear}-${mm}-${dd}`;
 
         const cell = document.createElement("div");
         cell.className = "day-cell";
 
-        const num = document.createElement("div");
-        num.className = "day-number";
-        num.textContent = day;
-        cell.appendChild(num);
+        const dayNumber = document.createElement("div");
+        dayNumber.className = "day-number";
+        dayNumber.textContent = day;
+        cell.appendChild(dayNumber);
 
-        const dayShifts = shifts.filter(s =>
-          s.date === dateStr &&
-          (currentFilterDoctor === "__all__" || s.doctor === currentFilterDoctor)
+        const dayShifts = shifts.filter(s => s.date === dateStr);
+        const visibleShifts = dayShifts.filter(s =>
+          currentFilterDoctor === "__all__" || s.doctor === currentFilterDoctor
         );
 
-        dayShifts.forEach(s => {
-          const badge = document.createElement("div");
-          badge.className = "plantao-badge";
-          badge.innerHTML = `
-            <strong>${s.doctor}</strong>
-            ${s.startTime} - ${s.endTime}<br>
-            ${s.type} ${s.notes ? "· " + s.notes : ""}
-          `;
-          cell.appendChild(badge);
+        visibleShifts
+          .sort((a, b) => (a.startTime || "").localeCompare(b.startTime || ""))
+          .forEach(s => {
+            const badge = document.createElement("div");
+            badge.className = "plantao-badge";
+            badge.innerHTML = `
+              <strong>${s.doctor}</strong>
+              ${(s.startTime || "")}${s.endTime ? " - " + s.endTime : ""}<br>
+              ${(s.type || "")}${s.notes ? " · " + s.notes : ""}
+            `;
+            cell.appendChild(badge);
+          });
+
+        // clique abre popup com TODOS os plantões do dia
+        cell.addEventListener("click", () => {
+          openDayModal(dateStr);
         });
 
         calendarGrid.appendChild(cell);
       }
 
-      const label = new Intl.DateTimeFormat("pt-BR", { month: "long", year: "numeric" })
-        .format(new Date(currentYear, currentMonth, 1));
-
-      monthLabel.textContent = label;
+      monthLabel.textContent = formatMonthLabel(currentYear, currentMonth);
     }
 
-    saveShiftBtn.addEventListener("click", () => {
-      if (!dateInput.value) return alert("Selecione a data.");
+    // POPUP DO DIA
+    function openDayModal(dateStr) {
+      const dayShifts = shifts
+        .filter(s => s.date === dateStr)
+        .sort((a, b) => (a.startTime || "").localeCompare(b.startTime || ""));
+
+      const [y, m, d] = dateStr.split("-");
+      const dateObj = new Date(Number(y), Number(m) - 1, Number(d));
+      const formatted = new Intl.DateTimeFormat("pt-BR", {
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+      }).format(dateObj);
+
+      dayModalTitle.textContent = `Plantões em ${formatted}`;
+
+      if (dayShifts.length === 0) {
+        dayModalContent.innerHTML = `<p style="margin:4px 0 2px 0;">Nenhum plantão cadastrado para esta data.</p>`;
+      } else {
+        dayModalContent.innerHTML = "";
+        dayShifts.forEach(s => {
+          const div = document.createElement("div");
+          div.className = "modal-shift";
+          div.innerHTML = `
+            <div class="modal-shift-header">
+              <span>${s.doctor}</span>
+              <span>${(s.startTime || "")}${s.endTime ? " - " + s.endTime : ""}</span>
+            </div>
+            <div>${s.type || ""}</div>
+            ${
+              s.notes
+                ? `<div class="modal-shift-notes"><strong>Obs:</strong> ${s.notes}</div>`
+                : ""
+            }
+          `;
+          dayModalContent.appendChild(div);
+        });
+      }
+
+      dayModal.classList.remove("hidden");
+    }
+
+    function closeDayModal() {
+      dayModal.classList.add("hidden");
+    }
+
+    // SALVAR PLANTÃO
+    function saveShift() {
+      const dateVal = dateInput.value;
+      const doctorVal = doctorSelect.value;
+      const startVal = startTimeInput.value;
+      const endVal = endTimeInput.value;
+      const typeVal = typeInput.value.trim();
+      const notesVal = notesInput.value.trim();
+
+      if (!dateVal || !doctorVal) {
+        alert("Preencha pelo menos a data e a residente.");
+        return;
+      }
 
       const newShift = {
-        id: Date.now(),
-        date: dateInput.value,
-        doctor: doctorSelect.value,
-        startTime: startTimeInput.value,
-        endTime: endTimeInput.value,
-        type: typeInput.value,
-        notes: notesInput.value
+        id: Date.now().toString(),
+        date: dateVal,
+        doctor: doctorVal,
+        startTime: startVal || "",
+        endTime: endVal || "",
+        type: typeVal || "",
+        notes: notesVal || ""
       };
 
       shifts.push(newShift);
       saveToStorage();
       renderCalendar();
-    });
 
+      startTimeInput.value = "";
+      endTimeInput.value = "";
+      typeInput.value = "";
+      notesInput.value = "";
+    }
+
+    // EVENTOS
     prevMonthBtn.addEventListener("click", () => {
       currentMonth--;
       if (currentMonth < 0) {
@@ -417,15 +719,20 @@
       renderCalendar();
     });
 
-    // BOTÃO TEMA
-    document.getElementById("themeToggle").addEventListener("click", () => {
-      document.body.classList.toggle("light-mode");
-    });
+    saveShiftBtn.addEventListener("click", saveShift);
 
+    themeToggleBtn.addEventListener("click", toggleTheme);
+
+    dayModal.addEventListener("click", closeDayModal);
+    dayModalClose.addEventListener("click", closeDayModal);
+    dayModalCard.addEventListener("click", e => e.stopPropagation());
+
+    // INIT
     initDoctorSelects();
     loadFromStorage();
+    loadTheme();
+    dateInput.valueAsDate = new Date();
     renderCalendar();
   </script>
-
 </body>
 </html>

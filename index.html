@@ -247,6 +247,29 @@
       box-shadow: 0 0 10px rgba(129, 140, 248, 0.8);
     }
 
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: 0.75rem;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.8);
+    }
+
+    body.light-mode .pill {
+      background: rgba(248, 250, 252, 0.98);
+      border-color: rgba(148, 163, 184, 0.9);
+    }
+
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+
     /* MODAL (POPUP DO DIA) */
     .hidden {
       display: none;
@@ -269,12 +292,14 @@
     .modal-card {
       max-width: 420px;
       width: calc(100% - 32px);
+      max-height: 80vh;          /* não estoura na tela do celular */
       background: rgba(15, 23, 42, 0.95);
       border-radius: 16px;
       padding: 16px 18px 14px;
       border: 1px solid rgba(148, 163, 184, 0.9);
       backdrop-filter: blur(18px);
       color: #e5e7eb;
+      overflow-y: auto;          /* scroll dentro do card */
     }
 
     body.light-mode .modal-card {
@@ -330,29 +355,6 @@
       margin-top: 2px;
       font-size: 0.78rem;
       opacity: 0.9;
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      border-radius: 999px;
-      padding: 3px 8px;
-      font-size: 0.75rem;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.8);
-    }
-
-    body.light-mode .pill {
-      background: rgba(248, 250, 252, 0.98);
-      border-color: rgba(148, 163, 184, 0.9);
-    }
-
-    .pill-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #22c55e;
     }
   </style>
 </head>
@@ -434,7 +436,7 @@
     <div class="modal-card" id="dayModalCard">
       <div class="modal-header">
         <div class="modal-title" id="dayModalTitle">Plantões</div>
-        <button class="modal-close" id="dayModalClose" type="button">Fechar</button>
+        <button class="modal-close" id="dayModalClose" type="button" onclick="closeDayModal()">Fechar</button>
       </div>
       <div class="modal-body" id="dayModalContent">
         <!-- conteúdo via JS -->
@@ -723,9 +725,23 @@
 
     themeToggleBtn.addEventListener("click", toggleTheme);
 
-    dayModal.addEventListener("click", closeDayModal);
-    dayModalClose.addEventListener("click", closeDayModal);
-    dayModalCard.addEventListener("click", e => e.stopPropagation());
+    // fechar modal ao clicar no fundo
+    dayModal.addEventListener("click", (e) => {
+      if (e.target === dayModal) {
+        closeDayModal();
+      }
+    });
+
+    // botão "Fechar" (além do onclick no HTML)
+    dayModalClose.addEventListener("click", (e) => {
+      e.stopPropagation();
+      closeDayModal();
+    });
+
+    // impedir clique dentro do card de fechar o modal
+    dayModalCard.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
 
     // INIT
     initDoctorSelects();
@@ -736,3 +752,4 @@
   </script>
 </body>
 </html>
+

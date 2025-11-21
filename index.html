@@ -4,159 +4,89 @@
   <meta charset="UTF-8" />
   <title>Escala de Plantões - PedLover S2</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <style>
     * {
-      body {
-  margin: 0;
-  padding: 0;
-  background: url("bg.avif") no-repeat center center fixed;
-  background-size: cover;
-  backdrop-filter: blur(1px);
-  color: #e5e7eb;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-
-    :root {
-      --bg-overlay: rgba(15, 23, 42, 0.86);
-      --card-bg: rgba(15, 23, 42, 0.9);
-      --card-border: rgba(148, 163, 184, 0.55);
-      --text-main: #e5e7eb;
-      --text-muted: #cbd5f5;
-      --chip-bg: rgba(15, 23, 42, 0.9);
-      --weekday-border: rgba(148, 163, 184, 0.3);
-      --day-cell-border: rgba(30, 64, 175, 0.4);
-      --day-cell-bg: radial-gradient(circle at 0% 0%, rgba(30, 64, 175, 0.18), rgba(15, 23, 42, 0.95));
-      --badge-bg: rgba(15, 23, 42, 0.95);
-      --badge-border: rgba(148, 163, 184, 0.7);
-      --input-bg: rgba(15, 23, 42, 0.9);
-      --input-border: rgba(148, 163, 184, 0.6);
-      --shadow-main: 0 18px 45px rgba(15, 23, 42, 0.9), 0 0 0 1px rgba(15, 23, 42, 0.8);
-    }
-
-    body.light-mode {
-      --bg-overlay: rgba(255, 255, 255, 0.85);
-      --card-bg: rgba(255, 255, 255, 0.92);
-      --card-border: rgba(148, 163, 184, 0.5);
-      --text-main: #0f172a;
-      --text-muted: #4b5563;
-      --chip-bg: rgba(248, 250, 252, 0.95);
-      --weekday-border: rgba(209, 213, 219, 0.8);
-      --day-cell-border: rgba(156, 163, 175, 0.9);
-      --day-cell-bg: radial-gradient(circle at 0% 0%, rgba(191, 219, 254, 0.45), rgba(248, 250, 252, 0.96));
-      --badge-bg: rgba(255, 255, 255, 0.98);
-      --badge-border: rgba(156, 163, 175, 0.8);
-      --input-bg: rgba(249, 250, 251, 0.98);
-      --input-border: rgba(209, 213, 219, 0.9);
-      --shadow-main: 0 12px 30px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(229, 231, 235, 0.9);
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     body {
       margin: 0;
       padding: 0;
-      color: var(--text-main);
+      background: url("bg.avif") no-repeat center center fixed;
+      background-size: cover;
+      backdrop-filter: blur(1px);
+      color: #e5e7eb;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-      /* fundo com a imagem que você mandou */
-      background-image:
-        linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.8)),
-        url("bg.jpg");
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
+      transition: 0.3s ease-in-out;
     }
 
+    /* MODO CLARO */
     body.light-mode {
-      background-image:
-        linear-gradient(135deg, rgba(248, 250, 252, 0.92), rgba(226, 232, 240, 0.9)),
-        url("bg.jpg");
+      color: #111;
     }
 
+    body.light-mode header,
+    body.light-mode .calendar-container,
+    body.light-mode .sidebar {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      color: #111;
+    }
+
+    body.light-mode .day-cell {
+      background: rgba(255, 255, 255, 0.65);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    /* HEADER */
     header {
       padding: 16px 24px;
-      background: linear-gradient(
-        90deg,
-        rgba(15, 23, 42, 0.92),
-        rgba(30, 64, 175, 0.95),
-        rgba(88, 28, 135, 0.95)
-      );
-      border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(0, 0, 0, 0.55);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      backdrop-filter: blur(12px);
-      color: #f9fafb;
+      backdrop-filter: blur(8px);
     }
 
-    body.light-mode header {
-      background: linear-gradient(
-        90deg,
-        rgba(248, 250, 252, 0.96),
-        rgba(219, 234, 254, 0.96),
-        rgba(237, 233, 254, 0.98)
-      );
-      border-bottom: 1px solid rgba(209, 213, 219, 0.9);
-      color: #0f172a;
+    /* BOTÃO MODO ESCURO/CLARO */
+    #themeToggle {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 1rem;
+      background: rgba(0,0,0,0.45);
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.2);
+      cursor: pointer;
+      transition: 0.3s;
     }
 
-    .title-group {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+    #themeToggle:hover {
+      background: rgba(0,0,0,0.6);
     }
 
     h1 {
       margin: 0;
-      font-size: 1.5rem;
+      font-size: 1.4rem;
     }
 
     .subtitle {
       font-size: 0.85rem;
-      opacity: 0.9;
-    }
-
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 8px;
-    }
-
-    button, select, input, textarea {
-      border-radius: 8px;
-      border: 1px solid var(--input-border);
-      background: var(--input-bg);
-      color: var(--text-main);
-      padding: 6px 10px;
-      font-size: 0.9rem;
-    }
-
-    button {
-      cursor: pointer;
-      border-color: rgba(129, 140, 248, 0.9);
-      background: radial-gradient(circle at 0% 0%, rgba(129, 140, 248, 0.5), rgba(37, 99, 235, 0.7));
-      color: #f9fafb;
-    }
-
-    body.light-mode button {
-      background: radial-gradient(circle at 0% 0%, rgba(129, 140, 248, 0.7), rgba(59, 130, 246, 0.95));
-      border-color: rgba(79, 70, 229, 0.9);
-      color: #f9fafb;
-    }
-
-    button:hover {
-      filter: brightness(1.05);
-      box-shadow: 0 0 12px rgba(129, 140, 248, 0.6);
+      color: #cbd5e1;
     }
 
     main {
       flex: 1;
-      padding: 20px 16px 24px;
+      padding: 16px;
       display: grid;
       grid-template-columns: minmax(0, 3fr) minmax(280px, 1.15fr);
       gap: 16px;
@@ -170,12 +100,11 @@
 
     .calendar-container,
     .sidebar {
-      background: var(--bg-overlay);
-      border-radius: 18px;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(6px);
+      border-radius: 12px;
       padding: 16px;
-      border: 1px solid var(--card-border);
-      box-shadow: var(--shadow-main);
-      backdrop-filter: blur(18px);
+      border: 1px solid rgba(255,255,255,0.15);
     }
 
     .calendar-header {
@@ -203,73 +132,40 @@
       text-align: center;
       font-size: 0.75rem;
       text-transform: uppercase;
-      color: var(--text-muted);
+      color: #cbd5e1;
       padding-bottom: 4px;
-      border-bottom: 1px solid var(--weekday-border);
-      font-weight: 500;
     }
 
     .day-cell {
       min-height: 90px;
-      background: var(--day-cell-bg);
-      border-radius: 12px;
-      border: 1px solid var(--day-cell-border);
+      background: rgba(0,0,0,0.45);
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
       padding: 4px;
       display: flex;
       flex-direction: column;
       gap: 4px;
       font-size: 0.8rem;
       position: relative;
-      overflow: hidden;
-    }
-
-    .day-cell.today {
-      border-color: rgba(248, 250, 252, 0.9);
-      box-shadow: 0 0 0 1px rgba(248, 250, 252, 0.8);
-    }
-
-    body.light-mode .day-cell.today {
-      border-color: rgba(30, 64, 175, 0.9);
-      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.8);
     }
 
     .day-number {
       font-weight: 600;
       font-size: 0.85rem;
-      color: var(--text-main);
     }
 
     .plantao-badge {
-      border-radius: 8px;
-      padding: 3px 5px;
-      background: var(--badge-bg);
-      border: 1px solid var(--badge-border);
+      border-radius: 6px;
+      padding: 2px 4px;
+      background: rgba(56,189,248,0.1);
+      border: 1px solid rgba(56,189,248,0.5);
       font-size: 0.7rem;
-      line-height: 1.2;
       cursor: default;
-      margin-top: 2px;
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-      color: var(--text-main);
-    }
-
-    .plantao-badge strong {
-      display: block;
-      font-size: 0.72rem;
     }
 
     .sidebar h2 {
       margin: 0;
       font-size: 1rem;
-      margin-bottom: 4px;
-      color: var(--text-main);
-    }
-
-    .sidebar {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
     }
 
     .field-group {
@@ -279,457 +175,31 @@
       font-size: 0.85rem;
     }
 
-    .field-group label {
-      color: var(--text-main);
-      opacity: 0.9;
-    }
-
-    .field-row {
-      display: flex;
-      gap: 6px;
-    }
-
-    .field-row > * {
-      flex: 1;
-    }
-
     textarea {
-      resize: vertical;
       min-height: 60px;
+      resize: vertical;
     }
 
-    .info-box {
-      margin-top: 4px;
-      padding: 8px;
-      border-radius: 12px;
-      background: var(--card-bg);
-      border: 1px dashed var(--card-border);
-      font-size: 0.75rem;
-      color: var(--text-muted);
+    button, select, input, textarea {
+      border-radius: 6px;
+      border: 1px solid #64748b;
+      background: rgba(0,0,0,0.4);
+      color: #fff;
+      padding: 6px 10px;
     }
 
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.75rem;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: var(--chip-bg);
-      border: 1px solid rgba(191, 219, 254, 0.8);
-      color: var(--text-main);
-    }
-
-    body.light-mode .pill {
-      border-color: rgba(129, 140, 248, 0.7);
-    }
-
-    .pill-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #22c55e;
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 2px 8px;
-      border-radius: 999px;
-      font-size: 0.72rem;
-      background: var(--chip-bg);
-      border: 1px solid var(--card-border);
-      color: var(--text-main);
-    }
-
-    .chip-color {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      border: 1px solid rgba(15, 23, 42, 0.9);
-    }
-
-    #themeToggleBtn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding-inline: 10px;
-    }
-
-    #themeToggleBtn span {
-      font-size: 0.8rem;
-    }
-
-    @media (max-width: 600px) {
-      header {
-        align-items: flex-start;
-      }
+    button:hover {
+      background: rgba(255,255,255,0.1);
     }
   </style>
 </head>
+
 <body>
+
+  <button id="themeToggle">🌗</button>
+
   <header>
     <div class="title-group">
-      <h1>Escala de Plantões</h1>
-      <div class="subtitle">
-        Painel da Bruna, Julia, Livia e Flavia para domar o caos da residência.
-      </div>
-    </div>
-    <div class="controls">
-      <div class="pill">
-        <span class="pill-dot"></span>
-        <span>Dados salvos neste navegador</span>
-      </div>
-      <button id="themeToggleBtn" type="button">🌙 <span>Modo escuro</span></button>
-    </div>
-  </header>
+      <h
 
-  <main>
-    <section class="calendar-container">
-      <div class="calendar-header">
-        <div>
-          <button id="prevMonthBtn" type="button">&lt;</button>
-          <button id="nextMonthBtn" type="button">&gt;</button>
-        </div>
-        <div class="month-display" id="monthLabel">Mês Ano</div>
-        <div>
-          <select id="filterDoctorSelect">
-            <option value="__all__">Todas as residentes</option>
-          </select>
-        </div>
-      </div>
-      <div class="calendar-grid" id="calendarGrid">
-        <!-- calendário entra aqui -->
-      </div>
-    </section>
-
-    <aside class="sidebar">
-      <h2>Novo plantão</h2>
-
-      <div class="info-box">
-        <strong>Como funciona?</strong><br />
-        • Esta versão salva os plantões apenas neste dispositivo.<br />
-        • Se abrir em outro celular/notebook, começa com uma escala vazia.<br />
-        • Perfeito para cada uma montar sua própria visão ou testar o fluxo.
-        <br /><br />
-        <span class="chip">
-          <span class="chip-color" style="background: #fb7185;"></span> Bruna
-        </span>
-        <span class="chip">
-          <span class="chip-color" style="background: #a855f7;"></span> Julia
-        </span>
-        <span class="chip">
-          <span class="chip-color" style="background: #22c55e;"></span> Livia
-        </span>
-        <span class="chip">
-          <span class="chip-color" style="background: #38bdf8;"></span> Flavia
-        </span>
-      </div>
-
-      <div class="field-group">
-        <label for="dateInput">Data</label>
-        <input id="dateInput" type="date" />
-      </div>
-
-      <div class="field-group">
-        <label for="doctorSelect">Residente</label>
-        <select id="doctorSelect"></select>
-      </div>
-
-      <div class="field-row">
-        <div class="field-group">
-          <label for="startTimeInput">Início</label>
-          <input id="startTimeInput" type="time" />
-        </div>
-        <div class="field-group">
-          <label for="endTimeInput">Fim</label>
-          <input id="endTimeInput" type="time" />
-        </div>
-      </div>
-
-      <div class="field-group">
-        <label for="typeInput">Tipo de plantão</label>
-        <input id="typeInput" type="text" placeholder="UTI, PS, enfermaria, ambulatório..." />
-      </div>
-
-      <div class="field-group">
-        <label for="notesInput">Observações</label>
-        <textarea id="notesInput" placeholder="Ex.: troca com fulana, cirurgia, prova, etc."></textarea>
-      </div>
-
-      <button id="saveShiftBtn" type="button">Salvar plantão</button>
-
-      <div class="info-box">
-        <strong>Dica:</strong><br />
-        Você pode instalar esse site no celular como “app” pelo navegador (Adicionar à tela de início).
-      </div>
-    </aside>
-  </main>
-
-  <script>
-    // LISTA DE RESIDENTES
-    const RESIDENTES = [
-      "Bruna",
-      "Julia",
-      "Livia",
-      "Flavia"
-    ];
-
-    const STORAGE_KEY = "escala_pedlover_s2";
-    const THEME_KEY = "escala_pedlover_theme";
-
-    const monthLabel = document.getElementById("monthLabel");
-    const calendarGrid = document.getElementById("calendarGrid");
-    const prevMonthBtn = document.getElementById("prevMonthBtn");
-    const nextMonthBtn = document.getElementById("nextMonthBtn");
-    const filterDoctorSelect = document.getElementById("filterDoctorSelect");
-
-    const dateInput = document.getElementById("dateInput");
-    const doctorSelect = document.getElementById("doctorSelect");
-    const startTimeInput = document.getElementById("startTimeInput");
-    const endTimeInput = document.getElementById("endTimeInput");
-    const typeInput = document.getElementById("typeInput");
-    const notesInput = document.getElementById("notesInput");
-    const saveShiftBtn = document.getElementById("saveShiftBtn");
-    const themeToggleBtn = document.getElementById("themeToggleBtn");
-
-    let currentDate = new Date();
-    let currentYear = currentDate.getFullYear();
-    let currentMonth = currentDate.getMonth();
-    let shifts = [];
-    let currentFilterDoctor = "__all__";
-
-    function loadFromStorage() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) {
-          shifts = [];
-          return;
-        }
-        const data = JSON.parse(raw);
-        shifts = Array.isArray(data) ? data : [];
-      } catch (e) {
-        console.error("Erro ao ler localStorage:", e);
-        shifts = [];
-      }
-    }
-
-    function saveToStorage() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(shifts));
-      } catch (e) {
-        console.error("Erro ao salvar localStorage:", e);
-      }
-    }
-
-    function initDoctorSelects() {
-      doctorSelect.innerHTML = "";
-      filterDoctorSelect.innerHTML = "";
-
-      const optAll = document.createElement("option");
-      optAll.value = "__all__";
-      optAll.textContent = "Todas as residentes";
-      filterDoctorSelect.appendChild(optAll);
-
-      RESIDENTES.forEach(name => {
-        const opt = document.createElement("option");
-        opt.value = name;
-        opt.textContent = name;
-        doctorSelect.appendChild(opt);
-
-        const optFilter = document.createElement("option");
-        optFilter.value = name;
-        optFilter.textContent = name;
-        filterDoctorSelect.appendChild(optFilter);
-      });
-    }
-
-    function formatMonthLabel(year, month) {
-      const formatter = new Intl.DateTimeFormat("pt-BR", {
-        month: "long",
-        year: "numeric"
-      });
-      return formatter.format(new Date(year, month, 1));
-    }
-
-    function isToday(year, month, day) {
-      const today = new Date();
-      return (
-        year === today.getFullYear() &&
-        month === today.getMonth() &&
-        day === today.getDate()
-      );
-    }
-
-    function renderCalendar() {
-      calendarGrid.innerHTML = "";
-
-      const weekdays = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
-      weekdays.forEach(dia => {
-        const el = document.createElement("div");
-        el.className = "weekday";
-        el.textContent = dia;
-        calendarGrid.appendChild(el);
-      });
-
-      const firstDay = new Date(currentYear, currentMonth, 1);
-      const lastDay = new Date(currentYear, currentMonth + 1, 0);
-
-      let startWeekday = firstDay.getDay();
-      startWeekday = (startWeekday + 6) % 7; // 0 = segunda
-
-      for (let i = 0; i < startWeekday; i++) {
-        const empty = document.createElement("div");
-        empty.className = "day-cell";
-        calendarGrid.appendChild(empty);
-      }
-
-      const mm = (currentMonth + 1).toString().padStart(2, "0");
-
-      for (let day = 1; day <= lastDay.getDate(); day++) {
-        const dd = day.toString().padStart(2, "0");
-        const dateStr = `${currentYear}-${mm}-${dd}`;
-
-        const cell = document.createElement("div");
-        cell.className = "day-cell";
-        if (isToday(currentYear, currentMonth, day)) {
-          cell.classList.add("today");
-        }
-
-        const dayNumber = document.createElement("div");
-        dayNumber.className = "day-number";
-        dayNumber.textContent = day;
-        cell.appendChild(dayNumber);
-
-        const dayShifts = shifts.filter(s => {
-          const sameDay = s.date === dateStr;
-          const matchesFilter =
-            currentFilterDoctor === "__all__" || s.doctor === currentFilterDoctor;
-          return sameDay && matchesFilter;
-        });
-
-        dayShifts
-          .sort((a, b) => (a.startTime || "").localeCompare(b.startTime || ""))
-          .forEach(s => {
-            const badge = document.createElement("div");
-            badge.className = "plantao-badge";
-            badge.innerHTML = `
-              <strong>${s.doctor}</strong>
-              ${(s.startTime || "")}${s.endTime ? " - " + s.endTime : ""}<br>
-              ${(s.type || "")}${s.notes ? " · " + s.notes : ""}
-            `;
-            cell.appendChild(badge);
-          });
-
-        calendarGrid.appendChild(cell);
-      }
-
-      monthLabel.textContent = formatMonthLabel(currentYear, currentMonth);
-    }
-
-    function saveShift() {
-      const dateVal = dateInput.value;
-      const doctorVal = doctorSelect.value;
-      const startVal = startTimeInput.value;
-      const endVal = endTimeInput.value;
-      const typeVal = typeInput.value.trim();
-      const notesVal = notesInput.value.trim();
-
-      if (!dateVal || !doctorVal) {
-        alert("Preencha pelo menos a data e a residente.");
-        return;
-      }
-
-      const newShift = {
-        id: Date.now().toString(),
-        date: dateVal,
-        doctor: doctorVal,
-        startTime: startVal || "",
-        endTime: endVal || "",
-        type: typeVal || "",
-        notes: notesVal || ""
-      };
-
-      shifts.push(newShift);
-      saveToStorage();
-
-      const [yyyy, mmStr] = dateVal.split("-");
-      const year = parseInt(yyyy, 10);
-      const month = parseInt(mmStr, 10) - 1;
-
-      if (year === currentYear && month === currentMonth) {
-        renderCalendar();
-      }
-
-      startTimeInput.value = "";
-      endTimeInput.value = "";
-      typeInput.value = "";
-      notesInput.value = "";
-    }
-
-    function applyTheme(theme) {
-      const body = document.body;
-      const label = themeToggleBtn.querySelector("span");
-      if (theme === "light") {
-        body.classList.add("light-mode");
-        themeToggleBtn.firstChild.textContent = "☀️ ";
-        label.textContent = "Modo claro";
-      } else {
-        body.classList.remove("light-mode");
-        themeToggleBtn.firstChild.textContent = "🌙 ";
-        label.textContent = "Modo escuro";
-      }
-    }
-
-    function loadTheme() {
-      const saved = localStorage.getItem(THEME_KEY);
-      const theme = saved === "light" || saved === "dark" ? saved : "dark";
-      applyTheme(theme);
-    }
-
-    function toggleTheme() {
-      const isLight = document.body.classList.contains("light-mode");
-      const next = isLight ? "dark" : "light";
-      applyTheme(next);
-      localStorage.setItem(THEME_KEY, next);
-    }
-
-    prevMonthBtn.addEventListener("click", () => {
-      currentMonth--;
-      if (currentMonth < 0) {
-        currentMonth = 11;
-        currentYear--;
-      }
-      renderCalendar();
-    });
-
-    nextMonthBtn.addEventListener("click", () => {
-      currentMonth++;
-      if (currentMonth > 11) {
-        currentMonth = 0;
-        currentYear++;
-      }
-      renderCalendar();
-    });
-
-    filterDoctorSelect.addEventListener("change", () => {
-      currentFilterDoctor = filterDoctorSelect.value;
-      renderCalendar();
-    });
-
-    saveShiftBtn.addEventListener("click", () => {
-      saveShift();
-    });
-
-    themeToggleBtn.addEventListener("click", toggleTheme);
-
-    // INICIALIZAÇÃO
-    initDoctorSelects();
-    loadFromStorage();
-    loadTheme();
-    dateInput.valueAsDate = new Date();
-    renderCalendar();
-  </script>
-</body>
-</html>
+  
